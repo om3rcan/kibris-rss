@@ -122,14 +122,6 @@ ad = "Gazedda Kıbrıs"
 url = "https://gazeddakibris.com/feed/"
 
 [[feed]]
-ad = "BRT (BRTK)"
-url = "https://www.brtk.net/feed/"
-
-[[feed]]
-ad = "Kıbrıs Ada Haber"
-url = "https://www.kibrisadahaber.com/rss"
-
-[[feed]]
 ad = "Yeniçağ Kıbrıs"
 url = "https://www.yenicag.com.cy/rss"
 

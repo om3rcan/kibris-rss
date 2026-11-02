@@ -1,0 +1,41 @@
+name: RSS filtrele
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"   # her saat :07 ve :37'de (UTC)
+  workflow_dispatch:          # Actions sekmesinden elle çalıştırma
+  push:
+    branches: [main]          # feeds.toml değişince hemen çalış
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rss-filtre
+  cancel-in-progress: true
+
+jobs:
+  filtrele:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Feed'leri indir ve filtrele
+        run: python filter_feeds.py --out public
+
+      - name: GitHub Pages'e yayımla
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true      # gh-pages geçmişi şişmesin
+          commit_message: "Filtreli feed'ler güncellendi"

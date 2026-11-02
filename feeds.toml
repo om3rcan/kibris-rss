@@ -26,6 +26,7 @@ kategori_engel = [
 link_engel = [
   "spor", "futbol", "basketbol", "voleybol",
   "magazin", "unlu", "eglence", "dizi", "astroloji", "burc", "moda",
+  "video", "foto-galeri", "galeri",
 ]
 
 # 3) Başlıkta geçen kelimelere göre engelleme. Varsayılan olarak boş,

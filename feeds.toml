@@ -1,0 +1,141 @@
+# Kıbrıs RSS filtresi - ayarlar
+#
+# Her çalıştırmada aşağıdaki feed'ler indirilir, engel kurallarına uyan
+# haberler çıkarılır ve temizlenmiş feed'ler GitHub Pages'te yayımlanır.
+#
+# Eşleştirme Türkçe karakterlerden bağımsızdır: "Spor", "SPOR", "spor",
+# "Ünlüler" ve "unluler" aynı kabul edilir. Terimler kelime başından
+# eşleşir: "spor" -> "Spor", "Spor Haberleri", "sporcu" yakalanır;
+# "transport" yakalanmaz.
+
+[filtre]
+
+# 1) Haberin RSS kategorisi (<category>, <dc:subject>, Atom term)
+#    bu terimlerden biriyle başlayan bir kelime içeriyorsa haber atılır.
+kategori_engel = [
+  "spor", "futbol", "basketbol", "voleybol", "hentbol", "tenis",
+  "formula", "motor sporlari", "atletizm", "super lig", "birinci lig",
+  "magazin", "unlu", "eglence", "dizi", "televizyon", "tv rehberi",
+  "astroloji", "burc", "moda", "guzellik", "yasam stili",
+]
+
+# 2) Haber linkinin klasör kısmında (son parça hariç) bu terimlerden
+#    biriyle başlayan bir bölüm varsa haber atılır.
+#    Örn: site.com/spor/xyz-123 , site.com/kategori/magazin-haberleri/xyz
+#    Haber başlığından üretilen son parça (slug) kontrol edilmez.
+link_engel = [
+  "spor", "futbol", "basketbol", "voleybol",
+  "magazin", "unlu", "eglence", "dizi", "astroloji", "burc", "moda",
+]
+
+# 3) Başlıkta geçen kelimelere göre engelleme. Varsayılan olarak boş,
+#    çünkü kelime eşleşmesi siyasi haberleri de yanlışlıkla atabilir.
+#    Kategorisi ve linki olmayan kaynaklarda kaçan haberler olursa
+#    buraya ekleyebilirsin. Örnek:
+#    baslik_engel = ["mac sonucu", "transfer", "teknik direktor", "derbi"]
+baslik_engel = []
+
+# 4) Bu terimler kategoride geçiyorsa yukarıdaki kurallara rağmen
+#    haber korunur. Örn: "Spor Bakanlığı" gibi siyasi haberler için
+#    sitelerin "Siyaset" kategorisini de işaretlediği durumlar.
+kategori_izin = []
+
+# Fluent Reader'a aktarılacak OPML'deki klasör adı
+opml_klasor = "Kıbrıs Haberler (Filtreli)"
+
+# Kaynaklar. "ad" OPML'de görünen isim; dosya adı bundan üretilir.
+[[feed]]
+ad = "Bugün Kıbrıs"
+url = "https://bugunkibris.com/feed/"
+
+[[feed]]
+ad = "Özgür Gazete Kıbrıs"
+url = "https://ozgurgazetekibris.com/feed"
+
+[[feed]]
+ad = "Kıbrıs Hakikat"
+url = "https://kibrishakikat.com/feed/"
+
+[[feed]]
+ad = "Halkın Sesi Kıbrıs"
+url = "https://www.halkinsesikibris.com/rss"
+
+[[feed]]
+ad = "Kıbrıs Türk"
+url = "https://www.kibristurk.com/rss"
+
+[[feed]]
+ad = "Yeni Düzen"
+url = "https://www.yeniduzen.com/rss/"
+
+[[feed]]
+ad = "Kıbrıs Manşet"
+url = "https://www.kibrismanset.com/rss"
+
+[[feed]]
+ad = "Kıbrıs Gerçek"
+url = "https://www.kibrisgercek.com/rss"
+
+[[feed]]
+ad = "Kıbrıs Gazetesi"
+url = "https://kibrisgazetesi.com/feed/"
+
+[[feed]]
+ad = "Diyalog Gazetesi"
+url = "https://www.diyaloggazetesi.com/rss.php"
+
+[[feed]]
+ad = "Yeni Bakış Gazetesi"
+url = "https://yenibakisgazetesi.com/feed/"
+
+[[feed]]
+ad = "Artı392"
+url = "https://www.arti392.com/rss"
+
+[[feed]]
+ad = "Ahbap Gazetesi"
+url = "https://ahbapgazetesi.com/feed/"
+
+[[feed]]
+ad = "Gıynık Gazetesi"
+url = "https://giynikgazetesi.com/feed/"
+
+[[feed]]
+ad = "Havadis"
+url = "https://www.havadiskibris.com/feed/"
+
+[[feed]]
+ad = "Gündem Kıbrıs"
+url = "https://www.gundemkibris.com/rss"
+
+[[feed]]
+ad = "Kıbrıs Genç TV"
+url = "https://www.kibrisgenctv.com/rss"
+
+[[feed]]
+ad = "Kıbrıs Time"
+url = "https://www.kibristime.com/rss"
+
+[[feed]]
+ad = "Gazedda Kıbrıs"
+url = "https://gazeddakibris.com/feed/"
+
+[[feed]]
+ad = "BRT (BRTK)"
+url = "https://www.brtk.net/feed/"
+
+[[feed]]
+ad = "Kıbrıs Ada Haber"
+url = "https://www.kibrisadahaber.com/rss"
+
+[[feed]]
+ad = "Yeniçağ Kıbrıs"
+url = "https://www.yenicag.com.cy/rss"
+
+[[feed]]
+ad = "Voice Kıbrıs Haber"
+url = "https://voicekibrishaber.com/rss.xml"
+
+[[feed]]
+ad = "SonDakikaCyprus"
+url = "https://www.sondakikacyprus.com/feed/"

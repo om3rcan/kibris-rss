@@ -20,6 +20,29 @@ Her haber üç açıdan kontrol edilir (kurallar `feeds.toml` içinde):
 
 Eşleştirme Türkçe karakter ve büyük/küçük harften bağımsızdır.
 
+## Birleşik feed
+
+`feeds/birlesik.xml`, tüm kaynaklardaki filtrelenmiş haberleri tek feed'de
+toplar. Aynı haber (ör. aynı TAK haberi ya da basın açıklaması) birden fazla
+sitede çıktıysa tek kayıt olarak görünür. Başlığa "(N kaynak)" eklenir,
+açıklamada her kaynağın linki yer alır. Haberin ilk görüldüğü site kaydın
+ana linkidir.
+
+Aynı haber olup olmadığı başlık ve metnin ilk cümlelerinin benzerliğine
+bakılarak ve 36 saatlik zaman aralığı içinde aranır. Türkçe ekler yüzünden
+kelimelerin ilk 5 harfi karşılaştırılır. Ayarlar `feeds.toml` içindeki
+`[birlesik]` bölümünde.
+
+## Kategori envanteri
+
+`envanter.html`, her sitenin haberlerinde görülen kategorileri ve link
+klasörlerini sayar. Her haber yalnızca bir kez, filtreden önceki hâliyle
+sayılır ve sayım çalıştırmalar boyunca birikir. Mevcut kurala takılanlar
+"engelli" olarak işaretlenir. Engel listesine ne ekleneceğini buradan seçebilirsin.
+
+Envanter ve birleşik feed'in durumu `durum/` klasöründe tutulur. İş akışı
+her çalıştırmada önceki yayını (`gh-pages`) okuyup bu durumu devam ettirir.
+
 ## Kurulum (bir kerelik, yaklaşık 5 dakika)
 
 1. GitHub'da yeni bir **public** repo oluştur (ör. `kibris-rss`).
@@ -38,7 +61,8 @@ Eşleştirme Türkçe karakter ve büyük/küçük harften bağımsızdır.
    durum sayfası açılır. Hangi feed'den kaç haber atıldığını burada görürsün.
 7. Aynı adresteki `filtreli.opml` dosyasını indir ve Fluent Reader'da
    **Ayarlar → Kaynaklar → OPML içe aktar** ile ekle. Eski (filtresiz)
-   kaynakları silebilirsin.
+   kaynakları silebilirsin. OPML'in başında birleşik feed de vardır; tek
+   tek kaynaklar yerine sadece onu takip etmek de mümkün.
 
 ## Günlük kullanım
 
@@ -70,4 +94,6 @@ Eşleştirme Türkçe karakter ve büyük/küçük harften bağımsızdır.
 ```bash
 pip install -r requirements.txt
 python filter_feeds.py --out public
+# Önceki yayının durumunu bir klasörden okumak için:
+python filter_feeds.py --out public --onceki eski-public
 ```

@@ -21,6 +21,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Önceki yayın: envanter/küme durumu ve indirilemeyen feed'lerin eski kopyası
+      - name: Önceki yayını al
+        uses: actions/checkout@v4
+        continue-on-error: true   # ilk çalıştırmada gh-pages yok
+        with:
+          ref: gh-pages
+          path: onceki
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -29,7 +37,7 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Feed'leri indir ve filtrele
-        run: python filter_feeds.py --out public
+        run: python filter_feeds.py --out public --onceki onceki
 
       - name: GitHub Pages'e yayımla
         uses: peaceiris/actions-gh-pages@v4

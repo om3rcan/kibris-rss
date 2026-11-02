@@ -44,6 +44,14 @@ kategori_izin = []
 # Fluent Reader'a aktarılacak OPML'deki klasör adı
 opml_klasor = "Kıbrıs Haberler (Filtreli)"
 
+# Birleşik feed (feeds/birlesik.xml): tüm kaynaklardaki filtreli haberler,
+# aynı haberin tekrarları tek kayda indirilmiş olarak. Başlığa "(N kaynak)"
+# eklenir, açıklamada kaynakların linkleri yer alır.
+[birlesik]
+ad = "Kıbrıs Haberler (Birleşik)"
+saat = 48        # son kaç saatin haberleri yayımlansın
+en_fazla = 300   # feed'deki en fazla haber sayısı
+
 # Kaynaklar. "ad" OPML'de görünen isim; dosya adı bundan üretilir.
 [[feed]]
 ad = "Bugün Kıbrıs"

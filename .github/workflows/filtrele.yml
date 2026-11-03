@@ -2,32 +2,42 @@ name: RSS filtrele
 
 on:
   schedule:
-    - cron: "7,37 * * * *"   # her saat :07 ve :37'de (UTC)
-  workflow_dispatch:          # Actions sekmesinden elle çalıştırma
+    # Her 10 dakikada bir (UTC :03, :13, ...). GitHub zamanlanmış
+    # çalıştırmaları geciktirebilir veya atlayabilir; düzenli çalışma için
+    # README'deki "Dışarıdan tetikleme" bölümüne bak.
+    - cron: "3-59/10 * * * *"
+  workflow_dispatch:          # Actions sekmesinden veya API'den çalıştırma
   push:
     branches: [main]          # feeds.toml değişince hemen çalış
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
+# Çalışan iş yarıda kesilmez; arada gelen tetiklemeler sıraya girer.
 concurrency:
   group: rss-filtre
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   filtrele:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.yayin.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
-      # Önceki yayın: envanter/küme durumu ve indirilemeyen feed'lerin eski kopyası
-      - name: Önceki yayını al
-        uses: actions/checkout@v4
-        continue-on-error: true   # ilk çalıştırmada gh-pages yok
+      # Önceki çıktı: envanter/küme durumu ve indirilemeyen feed'lerin eski
+      # kopyası. Önbellek yoksa betik yayındaki siteden okur.
+      - name: Önceki çıktıyı al
+        uses: actions/cache/restore@v4
         with:
-          ref: gh-pages
           path: onceki
+          key: onceki-${{ github.run_id }}
+          restore-keys: onceki-
 
       - uses: actions/setup-python@v5
         with:
@@ -39,11 +49,18 @@ jobs:
       - name: Feed'leri indir ve filtrele
         run: python filter_feeds.py --out public --onceki onceki
 
-      - name: GitHub Pages'e yayımla
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Çıktıyı sonraki çalıştırma için sakla
+        run: rm -rf onceki && cp -r public onceki
+
+      - uses: actions/cache/save@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: gh-pages
-          force_orphan: true      # gh-pages geçmişi şişmesin
-          commit_message: "Filtreli feed'ler güncellendi"
+          path: onceki
+          key: onceki-${{ github.run_id }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: GitHub Pages'e yayımla
+        id: yayin
+        uses: actions/deploy-pages@v4

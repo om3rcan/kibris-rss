@@ -1,0 +1,263 @@
+{
+  "guncelleme": "2026-11-03 08:16 UTC",
+  "birlesik": {
+    "yayinda": 300,
+    "kume": 553,
+    "cok_kaynakli": 145
+  },
+  "feedler": [
+    {
+      "ad": "TAK (Türk Ajansı Kıbrıs)",
+      "kaynak": "https://www.tak.gov.ct.tr/",
+      "dosya": "feeds/tak-turk-ajansi-kibris.xml",
+      "durum": "ok",
+      "toplam": 134,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Bugün Kıbrıs",
+      "kaynak": "https://bugunkibris.com/feed/",
+      "dosya": "feeds/bugun-kibris.xml",
+      "durum": "ok",
+      "toplam": 30,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Özgür Gazete Kıbrıs",
+      "kaynak": "https://ozgurgazetekibris.com/feed",
+      "dosya": "feeds/ozgur-gazete-kibris.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Kıbrıs Hakikat",
+      "kaynak": "https://kibrishakikat.com/feed/",
+      "dosya": "feeds/kibris-hakikat.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Halkın Sesi Kıbrıs",
+      "kaynak": "https://www.halkinsesikibris.com/rss",
+      "dosya": "feeds/halkin-sesi-kibris.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 23,
+      "ornekler": [
+        "Misty Bar’da eğlence tavan yaptı  [kategori: Magazin]",
+        "Acapulco’da moda rüzgârı esecek  [kategori: Magazin]",
+        "Özcan Deniz'den müzik ziyafeti  [kategori: Magazin]",
+        "İsrail konsolosluğu önündeki çatışmada dikkat çeken an  [link: /video/]",
+        "Sırbistan meclisinde muhalafet sis bombaları kullandı  [link: /video/]"
+      ]
+    },
+    {
+      "ad": "Kıbrıs Türk",
+      "kaynak": "https://www.kibristurk.com/rss",
+      "dosya": "feeds/kibris-turk.xml",
+      "durum": "ok",
+      "toplam": 39,
+      "atilan": 20,
+      "ornekler": [
+        "First FM, 30. yılını görkemli geceyle kutladı  [kategori: KIBRIS, MAGAZİN]",
+        "Dilan Gölbaşı İle Kritik | Konuk: Armağan Candan (CTP Milletvekili)  [link: /video/]",
+        "DİLAN GÖLBAŞI İLE KRİTİK: FIRAT ATASER (LAÇ BELEDİYESİ BAŞKANI)  [link: /video/]",
+        "OLD PADDY’NİN AÇILIŞI YAPILDI  [link: /video/]",
+        "KOOPBANK DEREBOYU ŞUBESİ AÇILDI  [link: /video/]"
+      ]
+    },
+    {
+      "ad": "Yeni Düzen",
+      "kaynak": "https://www.yeniduzen.com/rss/",
+      "dosya": "feeds/yeni-duzen.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Kıbrıs Manşet",
+      "kaynak": "https://www.kibrismanset.com/rss",
+      "dosya": "feeds/kibris-manset.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 21,
+      "ornekler": [
+        "TBF Başkanı Hidayet Türkoğlu, 2027 Dünya Kupası için umutlu  [kategori: Spor]",
+        "Teknecik santrali açıklarında köpek balığı görüldü  [link: /video/]",
+        "Lefkoşa sanayide büyük yangın  [link: /video/]",
+        "Taşkent Doğa Parkı talan edildi  [link: /video/]",
+        "Balalan yolu kar yağışı  [link: /video/]"
+      ]
+    },
+    {
+      "ad": "Kıbrıs Gerçek",
+      "kaynak": "https://www.kibrisgercek.com/rss",
+      "dosya": "feeds/kibris-gercek.xml",
+      "durum": "ok",
+      "toplam": 20,
+      "atilan": 3,
+      "ornekler": [
+        "Yenicami'nin yeni teknik direktörü Hasan Topaloğlu oldu  [kategori: SPOR]",
+        "Türkiye'nin dört büyük kulübü KKTC Dostluk Kupası'nda buluşacak  [kategori: KIBRIS, SPOR]",
+        "Harmancı: Lefkoşa’ya kapalı spor salonu kazandırmaya hazırız  [kategori: SPOR]"
+      ]
+    },
+    {
+      "ad": "Kıbrıs Gazetesi",
+      "kaynak": "https://kibrisgazetesi.com/feed/",
+      "dosya": "feeds/kibris-gazetesi.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Diyalog Gazetesi",
+      "kaynak": "https://www.diyaloggazetesi.com/rss.php",
+      "dosya": "feeds/diyalog-gazetesi.xml",
+      "durum": "ok",
+      "toplam": 100,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Yeni Bakış Gazetesi",
+      "kaynak": "https://yenibakisgazetesi.com/feed/",
+      "dosya": "feeds/yeni-bakis-gazetesi.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Artı392",
+      "kaynak": "https://www.arti392.com/rss",
+      "dosya": "feeds/arti392.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 20,
+      "ornekler": [
+        "Venezuela’nın Devlet Başkanı Maduro’yu Venezuela’nın başkentinden kaçıran birim.  [link: /video/]",
+        "“Seçimden önce ne söylediysem, onları yapacağım”  [link: /video/]",
+        "KKTC Cumhuriyet Meclisi’nde bir devir sona erdi  [link: /foto-galeri/]",
+        "KTÖS ve KTOEÖS, 40 örgütün desteğiyle Lefkoşa'da eylem düzenliyor…  [link: /foto-galeri/]",
+        "Gözler Cenevre’de  [link: /foto-galeri/]"
+      ]
+    },
+    {
+      "ad": "Ahbap Gazetesi",
+      "kaynak": "https://ahbapgazetesi.com/feed/",
+      "dosya": "feeds/ahbap-gazetesi.xml",
+      "durum": "ok",
+      "toplam": 70,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Gıynık Gazetesi",
+      "kaynak": "https://giynikgazetesi.com/feed/",
+      "dosya": "feeds/giynik-gazetesi.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Havadis",
+      "kaynak": "https://www.havadiskibris.com/feed/",
+      "dosya": "feeds/havadis.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Gündem Kıbrıs",
+      "kaynak": "https://www.gundemkibris.com/rss",
+      "dosya": "feeds/gundem-kibris.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 20,
+      "ornekler": [
+        "Bahar Sancar'la A'dan Z'ye...Konuk, UBP Milletvekili Sadık Gardiyanoğlu  [link: /video/]",
+        "Bahar Sancar'la A'dan Z'ye...Konuk, UBP Milletvekili Sadık Gardiyanoğlu  [link: /video/]",
+        "Gizem Özgeç'in konuğu, Siyasal İletişim Uzmanı Uğraş Beratlı  [link: /video/]",
+        "Bahar Sancar'la A'dan Z'ye...Konuk, CTP Girne Milletvekili Adayı Özlem Karadeniz  [link: /video/]",
+        "Bahar Sancar'la A'dan Z'ye...Konuk, TDP Girne Milletvekili Adayı Ayşe Öztabay  [link: /video/]"
+      ]
+    },
+    {
+      "ad": "Kıbrıs Genç TV",
+      "kaynak": "https://www.kibrisgenctv.com/rss",
+      "dosya": "feeds/kibris-genc-tv.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 20,
+      "ornekler": [
+        "AdaKıbrıs’ın lansmanı İstabul’da yapıldı  [link: /foto-galeri/]",
+        "Cumhuriyet Yerleşkesinin açılışı törenle yapıldı  [link: /foto-galeri/]",
+        "Öğretmen Sendikaları ve 40 örgüt Lefkoşa Şehitler Anıtı önünde eylem yaptı  [link: /foto-galeri/]",
+        "Volkan Konak, memleketi Trabzon'un Maçka ilçesinde vasiyeti üzerine istediği cev  [link: /foto-galeri/]",
+        "Cumhurbaşkanı Ersin Tatar ve Rum Lider Nikos Hristodulidis ara bölgede bir araya  [link: /foto-galeri/]"
+      ]
+    },
+    {
+      "ad": "Kıbrıs Time",
+      "kaynak": "https://www.kibristime.com/rss",
+      "dosya": "feeds/kibris-time.xml",
+      "durum": "ok",
+      "toplam": 40,
+      "atilan": 20,
+      "ornekler": [
+        "Güney Kıbrıs Rum Kesimi'nde Türk kızına saldırı!  [link: /video/]",
+        "Benter: Hem Memleketinize, Hem de İnsanlığa Katkılar Koyabileceksiniz  [link: /video/]",
+        "Bulut Akacan: 1 Milyon Sterlin haraç istediler  [link: /video/]",
+        "Gecitkoy barajina su yeniden geldi  [link: /video/]",
+        "KKTC Deniz Geçişi İsale Hattı Onarım çalışmaları  [link: /video/]"
+      ]
+    },
+    {
+      "ad": "Gazedda Kıbrıs",
+      "kaynak": "https://gazeddakibris.com/feed/",
+      "dosya": "feeds/gazedda-kibris.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Yeniçağ Kıbrıs",
+      "kaynak": "https://www.yenicag.com.cy/rss",
+      "dosya": "feeds/yenicag-kibris.xml",
+      "durum": "ok",
+      "toplam": 50,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "Voice Kıbrıs Haber",
+      "kaynak": "https://voicekibrishaber.com/rss.xml",
+      "dosya": "feeds/voice-kibris-haber.xml",
+      "durum": "ok",
+      "toplam": 50,
+      "atilan": 0,
+      "ornekler": []
+    },
+    {
+      "ad": "SonDakikaCyprus",
+      "kaynak": "https://www.sondakikacyprus.com/feed/",
+      "dosya": "feeds/sondakikacyprus.xml",
+      "durum": "ok",
+      "toplam": 10,
+      "atilan": 0,
+      "ornekler": []
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0"><head><title>Kıbrıs Haberler (Filtreli)</title></head><body>
+<outline text="Kıbrıs Haberler (Birleşik)" title="Kıbrıs Haberler (Birleşik)" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/birlesik.xml"/>
+<outline text="Kıbrıs Haberler (Filtreli)" title="Kıbrıs Haberler (Filtreli)">
+<outline text="TAK (Türk Ajansı Kıbrıs)" title="TAK (Türk Ajansı Kıbrıs)" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/tak-turk-ajansi-kibris.xml" htmlUrl="https://www.tak.gov.ct.tr/"/>
+<outline text="Bugün Kıbrıs" title="Bugün Kıbrıs" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/bugun-kibris.xml" htmlUrl="https://bugunkibris.com/"/>
+<outline text="Özgür Gazete Kıbrıs" title="Özgür Gazete Kıbrıs" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/ozgur-gazete-kibris.xml" htmlUrl="https://ozgurgazetekibris.com/"/>
+<outline text="Kıbrıs Hakikat" title="Kıbrıs Hakikat" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-hakikat.xml" htmlUrl="https://kibrishakikat.com/"/>
+<outline text="Halkın Sesi Kıbrıs" title="Halkın Sesi Kıbrıs" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/halkin-sesi-kibris.xml" htmlUrl="https://www.halkinsesikibris.com/"/>
+<outline text="Kıbrıs Türk" title="Kıbrıs Türk" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-turk.xml" htmlUrl="https://www.kibristurk.com/"/>
+<outline text="Yeni Düzen" title="Yeni Düzen" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/yeni-duzen.xml" htmlUrl="https://www.yeniduzen.com/"/>
+<outline text="Kıbrıs Manşet" title="Kıbrıs Manşet" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-manset.xml" htmlUrl="https://www.kibrismanset.com/"/>
+<outline text="Kıbrıs Gerçek" title="Kıbrıs Gerçek" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-gercek.xml" htmlUrl="https://www.kibrisgercek.com/"/>
+<outline text="Kıbrıs Gazetesi" title="Kıbrıs Gazetesi" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-gazetesi.xml" htmlUrl="https://kibrisgazetesi.com/"/>
+<outline text="Diyalog Gazetesi" title="Diyalog Gazetesi" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/diyalog-gazetesi.xml" htmlUrl="https://www.diyaloggazetesi.com/"/>
+<outline text="Yeni Bakış Gazetesi" title="Yeni Bakış Gazetesi" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/yeni-bakis-gazetesi.xml" htmlUrl="https://yenibakisgazetesi.com/"/>
+<outline text="Artı392" title="Artı392" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/arti392.xml" htmlUrl="https://www.arti392.com/"/>
+<outline text="Ahbap Gazetesi" title="Ahbap Gazetesi" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/ahbap-gazetesi.xml" htmlUrl="https://ahbapgazetesi.com/"/>
+<outline text="Gıynık Gazetesi" title="Gıynık Gazetesi" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/giynik-gazetesi.xml" htmlUrl="https://giynikgazetesi.com/"/>
+<outline text="Havadis" title="Havadis" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/havadis.xml" htmlUrl="https://www.havadiskibris.com/"/>
+<outline text="Gündem Kıbrıs" title="Gündem Kıbrıs" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/gundem-kibris.xml" htmlUrl="https://www.gundemkibris.com/"/>
+<outline text="Kıbrıs Genç TV" title="Kıbrıs Genç TV" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-genc-tv.xml" htmlUrl="https://www.kibrisgenctv.com/"/>
+<outline text="Kıbrıs Time" title="Kıbrıs Time" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/kibris-time.xml" htmlUrl="https://www.kibristime.com/"/>
+<outline text="Gazedda Kıbrıs" title="Gazedda Kıbrıs" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/gazedda-kibris.xml" htmlUrl="https://gazeddakibris.com/"/>
+<outline text="Yeniçağ Kıbrıs" title="Yeniçağ Kıbrıs" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/yenicag-kibris.xml" htmlUrl="https://www.yenicag.com.cy/"/>
+<outline text="Voice Kıbrıs Haber" title="Voice Kıbrıs Haber" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/voice-kibris-haber.xml" htmlUrl="https://voicekibrishaber.com/"/>
+<outline text="SonDakikaCyprus" title="SonDakikaCyprus" type="rss" xmlUrl="https://om3rcan.github.io/kibris-rss/feeds/sondakikacyprus.xml" htmlUrl="https://www.sondakikacyprus.com/"/>
+</outline></body></opml>

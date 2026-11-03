@@ -33,6 +33,21 @@ bakılarak ve 36 saatlik zaman aralığı içinde aranır. Türkçe ekler yüzü
 kelimelerin ilk 5 harfi karşılaştırılır. Ayarlar `feeds.toml` içindeki
 `[birlesik]` bölümünde.
 
+## RSS'i olmayan siteler (TAK)
+
+TAK'ın (Türk Ajansı Kıbrıs) RSS feed'i yok. `feeds.toml`'da `tur = "tak"`
+olan kaynak için feed, sitenin kategori sayfalarından (`sayfalar`) üretilir.
+Haber özetleri haber sayfalarından okunur; her haber sayfası yalnızca bir
+kez açılır, sonraki çalıştırmalarda özet önceki yayından alınır.
+
+TAK haberlerinin yalnızca giriş paragrafı herkese açık (`abonelik = true`).
+Birleşik feed'de aynı haberi başka bir site de verdiyse ana link o siteye
+gider. Sadece TAK'ta olan haberler, başka bir site de verir diye
+`abonelik_bekleme_dk` kadar bekletilir.
+
+TAK sayfa tasarımını değiştirirse bu kaynak durum sayfasında hata olarak
+görünür; `filter_feeds.py` içindeki `scrape_tak` güncellenmelidir.
+
 ## Kategori envanteri
 
 `envanter.html`, her sitenin haberlerinde görülen kategorileri ve link

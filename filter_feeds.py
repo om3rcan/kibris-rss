@@ -38,11 +38,13 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime, parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import urlsplit, unquote
+from urllib.parse import quote, urlsplit, unquote
 from xml.sax.saxutils import quoteattr
+from zoneinfo import ZoneInfo
 
 import requests
 from lxml import etree
+from lxml import html as lhtml
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -309,12 +311,145 @@ class Previous:
             return {}
 
 
+# --------------------------------------------------------------------------
+# RSS'i olmayan siteler: haber listesi sayfalarından feed üretme
+# --------------------------------------------------------------------------
+KIBRIS_TZ = ZoneInfo("Asia/Famagusta")
+_REL = re.compile(r"(\d+)\s*(saniye|dakika|saat|gün|hafta|ay)\s*önce")
+_REL_SEC = {"saniye": 1, "dakika": 60, "saat": 3600, "gün": 86400,
+            "hafta": 604800, "ay": 2592000}
+_BG = re.compile(r"url\('([^']+)'\)")
+_TAK_LEAD = re.compile(r"^[^:]{0,60}\(TAK\)\s*:\s*")
+_TAK_PAYWALL = "İçeriğin devamı için abone olmanız gerekmektedir."
+
+
+def tak_date(text: str) -> datetime | None:
+    """"03.11.2026 - 09:03:12" (Kıbrıs yerel saati)."""
+    m = re.search(r"(\d\d)\.(\d\d)\.(\d{4})\s*-\s*(\d\d):(\d\d)(?::(\d\d))?", text or "")
+    if not m:
+        return None
+    d, mo, y, h, mi, s = (int(x or 0) for x in m.groups())
+    return datetime(y, mo, d, h, mi, s, tzinfo=KIBRIS_TZ).astimezone(timezone.utc)
+
+
+def tak_relative(text: str, now: datetime) -> datetime | None:
+    """"15 dakika önce" gibi sunucunun yazdığı göreli zaman."""
+    m = _REL.search(text or "")
+    return now - timedelta(seconds=int(m.group(1)) * _REL_SEC[m.group(2)]) if m else None
+
+
+def tak_detail(url: str) -> tuple[str, datetime | None]:
+    """Haber sayfasından giriş paragrafı ve tam yayın saati. Metnin devamı
+    abonelere açık, giriş paragrafı herkese açık."""
+    doc = lhtml.fromstring(session.get(url, timeout=10).content)
+    text = " ".join(doc.xpath('string(//div[contains(@class,"bulk-content")])').split())
+    text = _TAK_LEAD.sub("", text.replace(_TAK_PAYWALL, "")).strip()
+    return text, tak_date(doc.xpath('string(//*[contains(@class,"news-details-publish-date")])'))
+
+
+def scrape_tak(feed: dict, prev_feed: bytes | None) -> bytes:
+    """TAK'ın kategori sayfalarından RSS 2.0 üretir.
+
+    Kategori sayfalarında iki tür kart var: üstteki slayt (tam tarih) ve
+    alttaki liste (göreli zaman). Özet yalnızca haber sayfasında; önceki
+    çalıştırmada alınan özetler önceki yayından okunur, sadece yeni
+    haberlerin sayfası açılır."""
+    base = feed["url"].rstrip("/") + "/"
+    now = datetime.now(timezone.utc)
+    items: dict[str, dict] = {}
+
+    def add(link, title, cat, date, img):
+        title = " ".join((title or "").split())
+        if not link or not title:
+            return
+        it = items.setdefault(link, {"link": link, "baslik": title, "kategori": set(),
+                                     "tarih": None, "gorsel": "", "ozet": ""})
+        if cat:
+            it["kategori"].add(" ".join(cat.split()))
+        it["tarih"] = it["tarih"] or date
+        it["gorsel"] = it["gorsel"] or img
+
+    for page in feed["sayfalar"]:
+        doc = lhtml.fromstring(fetch(base + page))
+        for slide in doc.xpath('//div[contains(concat(" ", @class, " "), " carousel-item ")]'):
+            a = slide.xpath('.//a[contains(@class,"slider-title-link")]')
+            bg = _BG.search(" ".join(slide.xpath('.//*[contains(@class,"image-dashed")]/@style')))
+            if a:
+                add(a[0].get("href"), a[0].text_content(),
+                    slide.xpath('string(.//*[contains(@class,"caption-category")])'),
+                    tak_date(slide.xpath('string(.//*[contains(@class,"caption-date")])')),
+                    bg.group(1) if bg else "")
+        for card in doc.xpath('//div[contains(@class,"categories-news")]'):
+            a = card.xpath('.//a[contains(@href,"/haber-detay/")]')
+            bg = _BG.search(" ".join(card.xpath('.//*[contains(@class,"cropable-image")]/@style')))
+            if a:
+                add(a[0].get("href"), card.xpath('string(.//*[contains(@class,"news-description")])'),
+                    card.xpath('string(.//*[contains(@class,"news-category-name")])'),
+                    tak_relative(card.xpath('string(.//*[@name="newstimeleft"])'), now),
+                    bg.group(1) if bg else "")
+    if not items:
+        raise ValueError("TAK sayfalarında haber bulunamadı (site tasarımı değişmiş olabilir)")
+
+    # Önceki yayındaki özet ve tarihler
+    known: dict[str, tuple[str, str]] = {}
+    if prev_feed:
+        old = etree.fromstring(prev_feed, etree.XMLParser(recover=True))
+        if old is not None:
+            for el in old.iter("item"):
+                known[(el.findtext("link") or "").strip()] = (
+                    el.findtext("description") or "", el.findtext("pubDate") or "")
+    started = datetime.now(timezone.utc)
+    errors = []
+    for it in sorted(items.values(), key=lambda x: x["tarih"] or now, reverse=True):
+        desc, date = known.get(it["link"], ("", ""))
+        if desc:
+            it["ozet"] = plain(desc)
+            it["tarih"] = parse_date(date) or it["tarih"]
+        elif datetime.now(timezone.utc) - started < timedelta(seconds=90):
+            try:
+                it["ozet"], exact = tak_detail(it["link"])
+                it["tarih"] = exact or it["tarih"]
+            except Exception as e:  # noqa: BLE001 - özet yoksa da haber yayımlanır
+                errors.append(f"{type(e).__name__}: {e}")
+    if errors:
+        print(f'  ! {feed["ad"]}: {len(errors)} haber sayfası okunamadı ({errors[0][:120]})',
+              file=sys.stderr)
+
+    rss = etree.Element("rss", version="2.0")
+    ch = etree.SubElement(rss, "channel")
+    etree.SubElement(ch, "title").text = feed["ad"]
+    etree.SubElement(ch, "link").text = base
+    etree.SubElement(ch, "description").text = f'{feed["ad"]} (haber listesinden üretildi)'
+    etree.SubElement(ch, "language").text = "tr"
+    for it in sorted(items.values(), key=lambda x: x["tarih"] or now, reverse=True):
+        el = etree.SubElement(ch, "item")
+        etree.SubElement(el, "title").text = it["baslik"]
+        etree.SubElement(el, "link").text = it["link"]
+        etree.SubElement(el, "guid", isPermaLink="true").text = it["link"]
+        etree.SubElement(el, "pubDate").text = format_datetime(it["tarih"] or now)
+        for c in sorted(it["kategori"]):
+            etree.SubElement(el, "category").text = c
+        if it["ozet"]:
+            etree.SubElement(el, "description").text = it["ozet"]
+        if it["gorsel"]:
+            etree.SubElement(el, "enclosure", url=quote(it["gorsel"], safe=":/%"),
+                             type="image/jpeg", length="0")
+    return etree.tostring(rss, xml_declaration=True, encoding="UTF-8")
+
+
+SCRAPERS = {"tak": scrape_tak}
+
+
 def process(feed: dict, rules: Rules, outdir: Path, prev: Previous) -> dict:
     slug = slugify(feed["ad"])
     target = outdir / "feeds" / f"{slug}.xml"
     res = {"ad": feed["ad"], "kaynak": feed["url"], "dosya": f"feeds/{slug}.xml"}
     try:
-        data, total, removed, samples, records = filter_feed(fetch(feed["url"]), rules)
+        if feed.get("tur"):
+            raw = SCRAPERS[feed["tur"]](feed, prev.get(res["dosya"]))
+        else:
+            raw = fetch(feed["url"])
+        data, total, removed, samples, records = filter_feed(raw, rules)
         target.write_bytes(data)
         res.update(durum="ok", toplam=total, atilan=removed, ornekler=samples,
                    _kayitlar=records)
@@ -385,8 +520,14 @@ def _when(iso: str | None, now: datetime) -> datetime:
     return min(d, now)  # saat dilimi yanlış siteler gelecekte görünmesin
 
 
+def main_link(c: dict) -> str:
+    """Kümenin ana linki: mümkünse abonelik istemeyen ilk kaynak."""
+    return next((s["link"] for s in c["kaynaklar"] if not s.get("abonelik")), c["link"])
+
+
 def update_clusters(state: dict, results: list[dict], now: datetime,
-                    keep_hours: int, window_hours: int = 36) -> list[dict]:
+                    keep_hours: int, paywalled: set[str] = frozenset(),
+                    window_hours: int = 36) -> list[dict]:
     """Yeni haberleri önceki kümelere ekler ya da yeni küme açar.
 
     Küme: aynı haberin farklı kaynaklardaki kopyaları. İlk gelen kopya
@@ -437,6 +578,8 @@ def update_clusters(state: dict, results: list[dict], now: datetime,
             if score > best_score:
                 best, best_score = i, score
         source = {"ad": site, "link": rec["link"], "tarih": when.isoformat()}
+        if site in paywalled:
+            source["abonelik"] = True
         if best is None:
             clusters.append({
                 "id": "k-" + hashlib.sha1(key.encode()).hexdigest()[:16],
@@ -466,7 +609,16 @@ def write_merged(path: Path, clusters: list[dict], cfg: dict, base_url: str | No
     hours = cfg.get("saat", 48)
     limit = cfg.get("en_fazla", 300)
     cutoff = now - timedelta(hours=hours)
-    shown = sorted((c for c in clusters if datetime.fromisoformat(c["ilk"]) >= cutoff),
+    # Yalnızca abonelikli kaynakta olan haber, başka bir site de verir diye
+    # bir süre bekletilir; okuyucu ilk gördüğü linki saklar.
+    wait = timedelta(minutes=cfg.get("abonelik_bekleme_dk", 60))
+
+    def ready(c: dict) -> bool:
+        return (any(not s.get("abonelik") for s in c["kaynaklar"])
+                or now - datetime.fromisoformat(c["ilk"]) >= wait)
+
+    shown = sorted((c for c in clusters
+                    if datetime.fromisoformat(c["ilk"]) >= cutoff and ready(c)),
                    key=lambda c: c["ilk"], reverse=True)[:limit]
 
     rss = etree.Element("rss", version="2.0", nsmap={"atom": ATOM})
@@ -484,12 +636,13 @@ def write_merged(path: Path, clusters: list[dict], cfg: dict, base_url: str | No
         n = len(c["kaynaklar"])
         it = etree.SubElement(ch, "item")
         etree.SubElement(it, "title").text = c["baslik"] + (f" ({n} kaynak)" if n > 1 else "")
-        etree.SubElement(it, "link").text = c["link"]
+        etree.SubElement(it, "link").text = main_link(c)
         etree.SubElement(it, "guid", isPermaLink="false").text = c["id"]
         etree.SubElement(it, "pubDate").text = format_datetime(datetime.fromisoformat(c["ilk"]))
         for s in c["kaynaklar"]:
             etree.SubElement(it, "category").text = s["ad"]
         links = ", ".join(f'<a href="{html.escape(s["link"])}">{html.escape(s["ad"])}</a>'
+                          + (" (abonelik)" if s.get("abonelik") else "")
                           for s in c["kaynaklar"])
         body = (f'<p><img src="{html.escape(c["gorsel"])}"></p>' if c["gorsel"] else "")
         body += f'<p>{html.escape(c["ozet"])}</p><p><b>{n} kaynakta:</b> {links}</p>'
@@ -537,7 +690,7 @@ def write_index(path: Path, results: list[dict], stamp: str, top: list[dict]):
                     f'{html.escape(r["ad"])}</a></td><td>{st}</td>'
                     f'<td><small>{det or err}</small></td></tr>')
     hot = "".join(
-        f'<tr><td class="n">{len(c["kaynaklar"])}</td><td><a href="{html.escape(c["link"])}">'
+        f'<tr><td class="n">{len(c["kaynaklar"])}</td><td><a href="{html.escape(main_link(c))}">'
         f'{html.escape(c["baslik"])}</a><br><small>'
         f'{html.escape(", ".join(s["ad"] for s in c["kaynaklar"]))}</small></td></tr>'
         for c in top)
@@ -650,7 +803,8 @@ def main() -> int:
 
     state = prev.json("durum/kumeler.json")
     clusters = update_clusters(state, results, now,
-                               keep_hours=max(merged_cfg.get("saat", 48), 36) + 48)
+                               keep_hours=max(merged_cfg.get("saat", 48), 36) + 48,
+                               paywalled={f["ad"] for f in feeds if f.get("abonelik")})
     (outdir / "durum" / "kumeler.json").write_text(
         json.dumps(state, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     merged_name = merged_cfg.get("ad", "Kıbrıs Haberler (Birleşik)")

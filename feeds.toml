@@ -51,8 +51,27 @@ opml_klasor = "Kıbrıs Haberler (Filtreli)"
 ad = "Kıbrıs Haberler (Birleşik)"
 saat = 48        # son kaç saatin haberleri yayımlansın
 en_fazla = 300   # feed'deki en fazla haber sayısı
+# Yalnızca abonelikli kaynakta (abonelik = true) olan bir haber, başka bir
+# site de verirse ana link ona gitsin diye bu kadar dakika bekletilir.
+# TAK'a abonesen 0 yap.
+abonelik_bekleme_dk = 60
 
 # Kaynaklar. "ad" OPML'de görünen isim; dosya adı bundan üretilir.
+#   tur      : RSS'i olmayan siteler için feed'i sayfalardan üreten yöntem
+#   sayfalar : "tur" ile okunacak sayfalar (url'ye göre)
+#   abonelik : haber metni aboneliğe kapalıysa true
+
+# TAK'ın RSS'i yok; feed kategori sayfalarından üretiliyor. Haberlerin
+# yalnızca giriş paragrafı açık, devamı abonelere.
+[[feed]]
+ad = "TAK (Türk Ajansı Kıbrıs)"
+url = "https://www.tak.gov.ct.tr/"
+tur = "tak"
+abonelik = true
+sayfalar = [
+  "kategori/kktc", "kategori/secim-2026", "kategori/guney-kibris",
+  "kategori/rum-basini", "kategori/turkiye", "kategori/dunya",
+]
 [[feed]]
 ad = "Bugün Kıbrıs"
 url = "https://bugunkibris.com/feed/"

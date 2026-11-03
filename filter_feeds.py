@@ -28,6 +28,7 @@ import argparse
 import hashlib
 import html
 import json
+import math
 import os
 import re
 import sys
@@ -515,6 +516,32 @@ def similarity(a: dict, b: dict) -> float:
     return 0.0
 
 
+def text_bag(titles: list[str], text: str) -> Counter:
+    """Kelime kökü sayıları; başlıklar özete göre iki kat ağırlıklı."""
+    bag = Counter()
+    for t in titles:
+        for s in set(stems(t)):
+            bag[s] += 2
+    bag.update(stems(text))
+    return bag
+
+
+def cluster_bag(c: dict) -> Counter:
+    return text_bag(c.get("basliklar") or [c["baslik"]], c["ozet"])
+
+
+def tfidf(bag: Counter, df: Counter, n: int) -> dict[str, float]:
+    v = {t: k * math.log(n / df[t]) for t, k in bag.items() if df[t]}
+    norm_ = math.sqrt(sum(x * x for x in v.values())) or 1.0
+    return {t: x / norm_ for t, x in v.items()}
+
+
+def cosine(a: dict, b: dict) -> float:
+    if len(a) > len(b):
+        a, b = b, a
+    return sum(x * b.get(t, 0.0) for t, x in a.items())
+
+
 def _when(iso: str | None, now: datetime) -> datetime:
     d = datetime.fromisoformat(iso) if iso else now
     return min(d, now)  # saat dilimi yanlış siteler gelecekte görünmesin
@@ -527,7 +554,7 @@ def main_link(c: dict) -> str:
 
 def update_clusters(state: dict, results: list[dict], now: datetime,
                     keep_hours: int, paywalled: set[str] = frozenset(),
-                    window_hours: int = 36) -> list[dict]:
+                    cosine_min: float = 0.5, window_hours: int = 36) -> list[dict]:
     """Yeni haberleri önceki kümelere ekler ya da yeni küme açar.
 
     Küme: aynı haberin farklı kaynaklardaki kopyaları. İlk gelen kopya
@@ -561,20 +588,33 @@ def update_clusters(state: dict, results: list[dict], now: datetime,
             fresh.append((_when(rec["tarih"], now), key, r["ad"], rec))
     fresh.sort(key=lambda x: x[0])
 
+    # Nadir kelime benzerliği (TF-IDF kosinüs): başlığı ve özeti yeniden
+    # yazılmış kopyaları yakalar. "Kemer Sokak Parkı" gibi o gün başka hiçbir
+    # haberde geçmeyen kelimeler ağır basar, "KKTC", "açıkladı" gibileri değil.
+    bags = [cluster_bag(c) for c in clusters]
+    fresh_bags = [text_bag([rec["baslik"]], rec["ozet"]) for _, _, _, rec in fresh]
+    df = Counter(t for b in bags + fresh_bags for t in b)
+    n_docs = len(bags) + len(fresh_bags)
+    vecs = [tfidf(b, df, n_docs) for b in bags]
+
     window = timedelta(hours=window_hours)
-    for when, key, site, rec in fresh:
+    for (when, key, site, rec), fbag in zip(fresh, fresh_bags):
         sig = rec["imza"]
-        cand = set()
+        vec = tfidf(fbag, df, n_docs)
+        hits = set()  # ortak başlık kökü ya da metin parçası olan kümeler
         for b in sig["b"]:
-            cand |= index.get(("b", b), set())
+            hits |= index.get(("b", b), set())
         for m in sig["m"]:
-            cand |= index.get(("m", m), set())
+            hits |= index.get(("m", m), set())
         best, best_score = None, 0.0
-        for i in cand:
-            c = clusters[i]
+        for i, c in enumerate(clusters):
             if abs(when - datetime.fromisoformat(c["ilk"])) > window:
                 continue
-            score = max(similarity(sig, s) for s in c["imza"])
+            cos = cosine(vec, vecs[i])
+            lexical = i in hits and max(similarity(sig, s) for s in c["imza"]) > 0
+            if not lexical and cos < cosine_min:
+                continue
+            score = cos + (1.0 if lexical else 0.0)
             if score > best_score:
                 best, best_score = i, score
         source = {"ad": site, "link": rec["link"], "tarih": when.isoformat()}
@@ -587,8 +627,10 @@ def update_clusters(state: dict, results: list[dict], now: datetime,
                 "baslik": rec["baslik"], "link": rec["link"],
                 "ozet": rec["ozet"], "gorsel": rec["gorsel"],
                 "kaynaklar": [source], "anahtar": [key], "imza": [sig],
+                "basliklar": [rec["baslik"]],
             })
             best = len(clusters) - 1
+            vecs.append(vec)
         else:
             c = clusters[best]
             c["anahtar"].append(key)
@@ -596,6 +638,10 @@ def update_clusters(state: dict, results: list[dict], now: datetime,
                 c["kaynaklar"].append(source)
             if len(c["imza"]) < 5:
                 c["imza"].append(sig)
+            titles = c.setdefault("basliklar", [c["baslik"]])
+            if len(titles) < 6 and rec["baslik"] not in titles:
+                titles.append(rec["baslik"])  # sonraki kopyalar farklı başlıkla da eşleşsin
+                vecs[best] = tfidf(cluster_bag(c), df, n_docs)
             if not c["gorsel"]:
                 c["gorsel"] = rec["gorsel"]
         add_index(best, sig)
@@ -804,7 +850,8 @@ def main() -> int:
     state = prev.json("durum/kumeler.json")
     clusters = update_clusters(state, results, now,
                                keep_hours=max(merged_cfg.get("saat", 48), 36) + 48,
-                               paywalled={f["ad"] for f in feeds if f.get("abonelik")})
+                               paywalled={f["ad"] for f in feeds if f.get("abonelik")},
+                               cosine_min=merged_cfg.get("benzerlik", 0.5))
     (outdir / "durum" / "kumeler.json").write_text(
         json.dumps(state, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     merged_name = merged_cfg.get("ad", "Kıbrıs Haberler (Birleşik)")

@@ -51,6 +51,9 @@ opml_klasor = "Kıbrıs Haberler (Filtreli)"
 ad = "Kıbrıs Haberler (Birleşik)"
 saat = 48        # son kaç saatin haberleri yayımlansın
 en_fazla = 300   # feed'deki en fazla haber sayısı
+# Başlığı/özeti farklı yazılmış kopyaları birleştirme eşiği (0-1). Düşürünce
+# daha çok haber birleşir ama farklı haberlerin karışma riski artar.
+benzerlik = 0.5
 # Yalnızca abonelikli kaynakta (abonelik = true) olan bir haber, başka bir
 # site de verirse ana link ona gitsin diye bu kadar dakika bekletilir.
 # TAK'a abonesen 0 yap.

@@ -28,10 +28,20 @@ sitede çıktıysa tek kayıt olarak görünür. Başlığa "(N kaynak)" eklenir
 açıklamada her kaynağın linki yer alır. Haberin ilk görüldüğü site kaydın
 ana linkidir.
 
-Aynı haber olup olmadığı başlık ve metnin ilk cümlelerinin benzerliğine
-bakılarak ve 36 saatlik zaman aralığı içinde aranır. Türkçe ekler yüzünden
-kelimelerin ilk 5 harfi karşılaştırılır. Ayarlar `feeds.toml` içindeki
-`[birlesik]` bölümünde.
+Aynı haber 36 saatlik zaman aralığı içinde iki yolla aranır:
+
+1. Başlık ve metnin ilk cümlelerinde ortak kelime ve kelime dizileri
+   (aynı TAK metnini kopyalayan siteler).
+2. Nadir kelime benzerliği: başlığı ve özeti yeniden yazılmış kopyalar için.
+   O gün başka haberlerde pek geçmeyen kelimeler ("Kemer Sokak Parkı",
+   "Ada 74") ağır basar, "KKTC", "açıkladı" gibi yaygın kelimeler sayılmaz.
+   Eşik `benzerlik` ayarıyla değiştirilebilir (varsayılan 0.5).
+
+Türkçe ekler yüzünden kelimelerin ilk 5 harfi karşılaştırılır. Ayarlar
+`feeds.toml` içindeki `[birlesik]` bölümünde.
+
+Tekrarsız okumak için Fluent Reader'da tek tek site feed'leri yerine yalnızca
+birleşik feed'i takip et; site feed'leri o sitenin tüm haberlerini içerir.
 
 ## RSS'i olmayan siteler (TAK)
 
